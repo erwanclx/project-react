@@ -1,0 +1,27 @@
+FROM php:8.3-apache
+
+# Install needed packages and PHP extensions
+RUN apt-get update && apt-get install -y \
+    git unzip libicu-dev libpq-dev libonig-dev libxml2-dev \
+    && docker-php-ext-install pdo pdo_mysql intl
+
+# Enable Apache mod_rewrite
+RUN a2enmod rewrite
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy application code (optional if volume is used)
+COPY . .
+
+# Install Symfony dependencies
+RUN composer install
+
+# Set permissions (optional)
+RUN chown -R www-data:www-data /var/www/html
+
+# Expose Apache port (usually done automatically)
+EXPOSE 80

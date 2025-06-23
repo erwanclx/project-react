@@ -1,1 +1,33 @@
 # project-react
+## How to run project locally ?
+
+Copy .env.sample to .env and populate the values.
+
+### Frontend
+
+```bash
+cd frontend
+npm install
+```
+
+### Backend
+
+```bash
+cd backend
+```
+
+
+## How to build the project ?
+
+### Frontend
+
+```bash
+cd frontend
+npm run build
+```
+
+### Backend
+
+```bash
+cd backend
+```
