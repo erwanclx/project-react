@@ -1,16 +1,11 @@
 {
 	"info": {
+		"_postman_id": "b89bbe21-c503-4f5b-9ade-4c2c27e97db1",
 		"name": "Movies API",
 		"description": "Collection pour tester l'API de gestion des films",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "22919734"
 	},
-	"variable": [
-		{
-			"key": "base_url",
-			"value": "http://localhost:8000",
-			"type": "string"
-		}
-	],
 	"item": [
 		{
 			"name": "Créer un film",
@@ -24,19 +19,21 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"Inception\",\n    \"description\": \"Un thriller de science-fiction complexe sur les rêves dans les rêves\",\n    \"genre\": \"ACTION\",\n    \"duration\": 148,\n    \"release_date\": \"2010-07-16T00:00:00+00:00\"\n}"
+					"raw": "{\n    \"title\": \"Inception\",\n    \"description\": \"Un thriller de science-fiction complexe sur les rêves dans les rêves\",\n    \"genre\": \"Documentary\",\n    \"duration\": 148,\n    \"release_date\": \"2010-07-16T00:00:00+00:00\"\n}"
 				},
 				"url": {
-					"raw": "{{base_url}}/movies",
+					"raw": "{{base_url}}/api/movies",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
+						"api",
 						"movies"
 					]
 				},
 				"description": "Créer un nouveau film"
-			}
+			},
+			"response": []
 		},
 		{
 			"name": "Obtenir tous les films",
@@ -44,16 +41,37 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/movies",
+					"raw": "{{base_url}}/api/movies",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
+						"api",
 						"movies"
 					]
 				},
 				"description": "Récupérer la liste de tous les films"
-			}
+			},
+			"response": []
+		},
+		{
+			"name": "Obtenir tous les genres",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/api/genres",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"api",
+						"genres"
+					]
+				},
+				"description": "Récupérer la liste de tous les films"
+			},
+			"response": []
 		},
 		{
 			"name": "Obtenir un film par ID",
@@ -61,17 +79,19 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/movies/1",
+					"raw": "{{base_url}}/api/movies/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
+						"api",
 						"movies",
 						"1"
 					]
 				},
 				"description": "Récupérer un film spécifique par son ID"
-			}
+			},
+			"response": []
 		},
 		{
 			"name": "Mettre à jour un film",
@@ -85,20 +105,22 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"title\": \"Inception - Director's Cut\",\n    \"description\": \"Version réalisateur du thriller de science-fiction complexe sur les rêves\",\n    \"duration\": 158\n}"
+					"raw": "{\n    \"title\": \"Inceptionsss - Director's Cut\",\n    \"description\": \"Version réalisateur du thriller de science-fiction complexe sur les rêves\",\n    \"duration\": 158\n}"
 				},
 				"url": {
-					"raw": "{{base_url}}/movies/1",
+					"raw": "{{base_url}}/api/movies/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
+						"api",
 						"movies",
 						"1"
 					]
 				},
 				"description": "Mettre à jour un film existant"
-			}
+			},
+			"response": []
 		},
 		{
 			"name": "Supprimer un film",
@@ -106,17 +128,48 @@
 				"method": "DELETE",
 				"header": [],
 				"url": {
-					"raw": "{{base_url}}/movies/1",
+					"raw": "{{base_url}}/api/movies/1",
 					"host": [
 						"{{base_url}}"
 					],
 					"path": [
+						"api",
 						"movies",
 						"1"
 					]
 				},
 				"description": "Supprimer un film"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
 			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8002",
+			"type": "string"
 		}
 	]
 }
