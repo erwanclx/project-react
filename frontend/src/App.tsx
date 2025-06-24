@@ -1,14 +1,6 @@
 import {useEffect, useState} from 'react'
 import './App.css'
-
-type Movie = {
-    id: number;
-    title: string;
-    description: string;
-    genre: string;
-    duration: number;
-    release_date: string;
-};
+import type {Movie} from '../types/movie.ts';
 
 function App() {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -48,7 +40,11 @@ function App() {
                                 <td>{movie.description}</td>
                                 <td>{movie.genre}</td>
                                 <td>{movie.duration}</td>
-                                <td>{new Date(movie.release_date).toLocaleDateString()}</td>
+                                <td>
+                                    {movie.release_date
+                                        ? new Date(movie.release_date).toLocaleDateString()
+                                        : '—'}
+                                </td>
                                 <td>
                                     <button className="btn btn-edit">Modifier</button>
                                     {' '}

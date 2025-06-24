@@ -25,7 +25,7 @@ export interface Movie {
     description: string | null;
     genre: Genre | null;
     duration: number | null;
-    releaseDate: string | null; // Format ISO string (YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss)
+    release_date: string | null; // Format ISO string (YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss)
 }
 
 /* DTO pour les opérations CRUD */
