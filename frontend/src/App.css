@@ -85,6 +85,11 @@ html, body {
     font-weight: bold;
 }
 
+.movies-table td .btn {
+    display: inline-block;
+    margin-right: 0.4rem;
+}
+
 .movies-table th {
     color: black;
     background-color: #f5f5f5;
@@ -96,6 +101,11 @@ html, body {
     border: none;
     border-radius: 4px;
     cursor: pointer;
+}
+
+.btn svg {
+    vertical-align: middle;
+    font-size: 1.1rem;
 }
 
 .btn-primary {
@@ -111,4 +121,12 @@ html, body {
 .btn-delete {
     background-color: #dc3545;
     color: white;
+}
+
+.btn-group {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 0.5rem;
+    justify-content: flex-start; /* ou center / flex-end selon ton goût */
+    align-items: center;
 }

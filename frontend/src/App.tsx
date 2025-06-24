@@ -1,6 +1,7 @@
 import {useEffect, useState} from 'react'
 import './App.css'
 import type {Movie} from '../types/movie.ts';
+import {FaEdit, FaTrash} from 'react-icons/fa';
 
 function App() {
     const [movies, setMovies] = useState<Movie[]>([]);
@@ -46,9 +47,14 @@ function App() {
                                         : '—'}
                                 </td>
                                 <td>
-                                    <button className="btn btn-edit">Modifier</button>
-                                    {' '}
-                                    <button className="btn btn-delete">Supprimer</button>
+                                    <div className="btn-group">
+                                        <button className="btn btn-edit" title="Modifier">
+                                            <FaEdit/>
+                                        </button>
+                                        <button className="btn btn-delete" title="Supprimer">
+                                            <FaTrash/>
+                                        </button>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
