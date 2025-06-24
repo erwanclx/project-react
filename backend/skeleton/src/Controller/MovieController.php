@@ -127,4 +127,11 @@ class MovieController extends AbstractController
 
         return $this->json(['message' => 'Movie deleted']);
     }
+
+    #[Route('/genres', name: 'api_movie_genres', methods: ['GET'])]
+    public function getMovieGenres(): JsonResponse
+    {
+        $genres = array_map(fn(Genre $genre) => $genre->value, Genre::cases());
+        return $this->json($genres);
+    }
 }
