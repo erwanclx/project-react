@@ -31,3 +31,11 @@ npm run build
 ```bash
 cd backend
 ```
+
+### Database
+Generate and run migs
+
+```bash
+RUN php bin/console make:migration 
+bin/console doctrine:migrations:migrate
+```

@@ -29,7 +29,4 @@ RUN chown -R www-data:www-data ${APP_DIR}
 
 RUN php bin/console cache:clear --no-warmup
 
-RUN php bin/console make:migrate 
-RUN php bin/console doctrine:migrations:migrate
-
 CMD ["php-fpm"]
