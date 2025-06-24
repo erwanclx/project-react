@@ -3,7 +3,7 @@ FROM php:8.3-apache
 # Install needed packages and PHP extensions
 RUN apt-get update && apt-get install -y \
     git unzip libicu-dev libpq-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql intl
+    && docker-php-ext-install pdo pdo_mysql intl git
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -18,6 +18,7 @@ WORKDIR /var/www/html
 COPY . .
 
 # Install Symfony dependencies
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 RUN composer install
 
 # Set permissions (optional)
