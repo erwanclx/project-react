@@ -62,7 +62,9 @@ html, body {
 }
 
 .table-actions {
-    margin-bottom: 1rem;
+    display: flex;
+    justify-content: center;
+    margin: 2rem 0;
 }
 
 .table-wrapper {
@@ -111,6 +113,23 @@ html, body {
 .btn-primary {
     background-color: #007bff;
     color: white;
+}
+
+.btn-add {
+    background-color: #28a745;
+    color: white;
+    margin-left: auto;
+    margin-right: 1rem;
+    padding: 0.6rem 1.2rem;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.btn-add:hover {
+    background-color: #218838;
 }
 
 .btn-edit {

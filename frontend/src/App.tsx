@@ -19,7 +19,7 @@ function App() {
                 <h1 className="page-title">Films de la filmothèque</h1>
 
                 <div className="table-actions">
-                    <button className="btn btn-primary">Ajouter un film</button>
+                    <button className="btn btn-add">➕ Ajouter un film</button>
                 </div>
 
                 <div className="table-wrapper">
