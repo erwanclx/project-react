@@ -1,0 +1,59 @@
+services:
+  mariadb_dev:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MYSQL_DATABASE}
+      MARIADB_USER: ${MYSQL_USER}
+      MARIADB_PASSWORD: ${MYSQL_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+    networks:
+      - app-network
+
+  phpmyadmin:
+    image: phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mariadb
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "8081:80"
+    networks:
+      - app-network
+    depends_on:
+      - mariadb_dev
+
+  backend_dev:
+    # image: php:8.2-fpm
+    build:
+      context: .
+      dockerfile: ./docker/backend
+    container_name: backend
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: mysql://${MYSQL_USER}:${MYSQL_PASSWORD}@mariadb:3306/${MYSQL_DATABASE}
+    volumes:
+      - ./backend/skeleton:/var/www/html
+    networks:
+      - app-network
+    ports:
+      - "9000:80"
+    depends_on:
+      - mariadb_dev
+
+  frontend_dev:
+    image: node:20
+    working_dir: /app
+    volumes:
+      - ./frontend:/app
+    command: npm run dev
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+
+networks:
+  app-network:
+    driver: bridge
