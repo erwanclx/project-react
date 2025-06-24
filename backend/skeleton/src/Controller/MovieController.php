@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MovieController extends AbstractController
 {
-    #[Route('/movies', name: 'api_movies', methods: ['GET'])]
+    #[Route('/api/movies', name: 'api_movies', methods: ['GET'])]
     public function getMovies(EntityManagerInterface $em): JsonResponse
     {
         $movies = $em->getRepository(Movie::class)->findAll();
