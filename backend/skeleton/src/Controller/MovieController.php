@@ -17,6 +17,9 @@ class MovieController extends AbstractController
         $data = array_map(fn(Movie $movie) => [
             'id' => $movie->getId(),
             'title' => $movie->getTitle(),
+            'description' => $movie->getDescription(),
+            'genre' => $movie->getGenre(),
+            'duration' => $movie->getDuration(),
             'release_date' => $movie->getReleaseDate()->format('c'),
         ], $movies);
 
