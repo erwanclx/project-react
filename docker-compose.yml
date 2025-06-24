@@ -25,7 +25,10 @@ services:
       - mariadb
 
   backend:
-    image: php:8.2-fpm
+    # image: php:8.2-fpm
+    build:
+      context: .
+      dockerfile: ./docker/backend
     container_name: backend
     restart: unless-stopped
     environment:
