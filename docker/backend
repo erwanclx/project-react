@@ -1,28 +1,32 @@
-FROM php:8.3-apache
+FROM php:8.2-fpm
 
-# Install needed packages and PHP extensions
+ENV APP_DIR=/var/www/html
+ENV TZ=Europe/Paris
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+EXPOSE 9000
+
 RUN apt-get update && apt-get install -y \
-    git unzip libicu-dev libpq-dev libonig-dev libxml2-dev \
-    && docker-php-ext-install pdo pdo_mysql intl git
+    zip git curl unzip libicu-dev libpq-dev libaio1 \
+    libzip-dev libonig-dev locales tzdata git \
+    && docker-php-ext-install intl pdo pdo_mysql opcache
 
-# Enable Apache mod_rewrite
-RUN a2enmod rewrite
+RUN curl -sS https://get.symfony.com/cli/installer | bash && \
+    mv /root/.symfony*/bin/symfony /usr/local/bin/symfony && \
+    rm -rf /root/.symfony*
 
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+WORKDIR ${APP_DIR}
 
-# Set working directory
-WORKDIR /var/www/html
+COPY ./backend/skeleton/composer.json ./
 
-# Copy application code (optional if volume is used)
-COPY . .
-
-# Install Symfony dependencies
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-RUN composer install
 
-# Set permissions (optional)
-RUN chown -R www-data:www-data /var/www/html
+RUN composer install --no-scripts --no-interaction --prefer-dist --working-dir=./
 
-# Expose Apache port (usually done automatically)
-EXPOSE 80
+COPY ./backend/skeleton/ ./
+
+RUN chown -R www-data:www-data ${APP_DIR}
+
+RUN php bin/console cache:clear --no-warmup
+
+CMD ["php-fpm"]
