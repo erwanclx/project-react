@@ -13,6 +13,17 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class MovieController extends AbstractController
 {
+    private function movieToArray(Movie $movie): array
+    {
+        return [
+            'id' => $movie->getId(),
+            'title' => $movie->getTitle(),
+            'description' => $movie->getDescription(),
+            'genre' => $movie->getGenre()?->value,
+            'duration' => $movie->getDuration(),
+            'release_date' => $movie->getReleaseDate()->format('c'),
+        ];
+    }
     #[Route('/movies', name: 'api_movies', methods: ['GET'])]
     public function getMovies(EntityManagerInterface $em): JsonResponse
     {
@@ -72,7 +83,7 @@ class MovieController extends AbstractController
         $em->persist($movie);
         $em->flush();
 
-        return $this->json(['message' => 'Movie created', 'id' => $movie->getId()], Response::HTTP_CREATED);
+        return $this->json($this->movieToArray($movie), Response::HTTP_CREATED);
     }
 
     #[Route('/movies/{id}', name: 'api_movie_update', methods: ['PUT'])]
@@ -111,7 +122,7 @@ class MovieController extends AbstractController
 
         $em->flush();
 
-        return $this->json(['message' => 'Movie updated']);
+        return $this->json($this->movieToArray($movie), Response::HTTP_CREATED);
     }
 
     #[Route('/movies/{id}', name: 'api_movie_delete', methods: ['DELETE'])]
