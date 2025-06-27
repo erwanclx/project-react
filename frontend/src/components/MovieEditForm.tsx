@@ -24,12 +24,21 @@ export default function MovieEditForm({ movie, onUpdated, onCancel }: Props) {
     const [error, setError] = useState<string | null>(null);
     const API_URL = 'http://localhost:8002/api';
 
-    function handleChange(e: React.ChangeEvent<any>) {
-        const { name, value } = e.target;
-        setForm(prev => ({
-            ...prev,
-            [name]: name === 'duration' ? Number(value) : value,
-        }));
+    function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
+        const { name, value, type } = e.target;
+        if (type === 'file') {
+            const fileInput = e.target as HTMLInputElement;
+            const file = fileInput.files?.[0];
+            setForm(prev => ({
+                ...prev,
+                [name]: file,
+            }));
+        } else {
+            setForm(prev => ({
+                ...prev,
+                [name]: name === 'duration' ? Number(value) : value,
+            }));
+        }
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -38,14 +47,46 @@ export default function MovieEditForm({ movie, onUpdated, onCancel }: Props) {
         setLoading(true);
 
         try {
-            const res = await fetch(`${API_URL}/movies/${movie.id}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(form),
-            });
-            if (!res.ok) throw new Error('Erreur lors de la modification');
+            let response: Response;
 
-            const updatedMovie: Movie = await res.json();
+            if (form.image) {
+                const formData = new FormData();
+
+                const movieData = {
+                    title: form.title,
+                    description: form.description,
+                    genre: form.genre,
+                    duration: form.duration,
+                    release_date: form.release_date,
+                };
+
+                formData.append('data', JSON.stringify(movieData));
+                formData.append('image', form.image);
+
+                response = await fetch(`${API_URL}/movies/${movie.id}`, {
+                    method: 'POST',
+                    body: formData,
+                });
+            } else {
+                response = await fetch(`${API_URL}/movies/${movie.id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        title: form.title,
+                        description: form.description,
+                        genre: form.genre,
+                        duration: form.duration,
+                        release_date: form.release_date,
+                    }),
+                });
+            }
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || 'Erreur lors de la modification');
+            }
+
+            const updatedMovie: Movie = await response.json();
             onUpdated(transformMovie(updatedMovie));
         } catch (err: any) {
             setError(err.message || 'Erreur inconnue');
@@ -57,6 +98,16 @@ export default function MovieEditForm({ movie, onUpdated, onCancel }: Props) {
     return (
         <Form onSubmit={handleSubmit}>
             {error && <Alert variant="danger">{error}</Alert>}
+
+            <Form.Group className="mb-3">
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                />
+            </Form.Group>
 
             <Form.Group className="mb-3">
                 <Form.Label>Titre</Form.Label>

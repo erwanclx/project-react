@@ -106,15 +106,47 @@ class MovieController extends AbstractController
         return $this->json($this->movieToArray($movie), Response::HTTP_CREATED);
     }
 
-    #[Route('/movies/{id}', name: 'api_movie_update', methods: ['PUT'])]
-    public function updateMovie(Request $request, EntityManagerInterface $em, $id): JsonResponse
+    #[Route('/movies/{id}', name: 'api_movie_update', methods: ['PUT', 'POST'])]
+    public function updateMovie(Request $request, EntityManagerInterface $em, SluggerInterface $slugger, $id): JsonResponse
     {
         $movie = $em->getRepository(Movie::class)->find($id);
         if (!$movie) {
             return $this->json(['error' => 'Movie not found'], Response::HTTP_NOT_FOUND);
         }
 
-        $data = json_decode($request->getContent(), true);
+        // Gestion des données selon le type de requête
+        if ($request->getMethod() === 'POST') {
+            // Requête multipart/form-data avec image
+            $data = json_decode($request->request->get('data'), true);
+            
+            // Gestion de l'upload d'image
+            $imageFile = $request->files->get('image');
+            if ($imageFile) {
+                // Supprimer l'ancienne image si elle existe
+                if ($movie->getImage()) {
+                    $oldImagePath = $this->getParameter('movie_images_directory') . '/' . $movie->getImage();
+                    if (file_exists($oldImagePath)) {
+                        unlink($oldImagePath);
+                    }
+                }
+
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('movie_images_directory'),
+                        $newFilename
+                    );
+                    $movie->setImage($newFilename);
+                } catch (\Exception $e) {
+                    return $this->json(['error' => 'Error uploading image'], Response::HTTP_INTERNAL_SERVER_ERROR);
+                }
+            }
+        } else {
+            $data = json_decode($request->getContent(), true);
+        }
 
         if (isset($data['title'])) {
             $movie->setTitle($data['title']);
@@ -142,7 +174,7 @@ class MovieController extends AbstractController
 
         $em->flush();
 
-        return $this->json($this->movieToArray($movie), Response::HTTP_CREATED);
+        return $this->json($this->movieToArray($movie), Response::HTTP_OK);
     }
 
     #[Route('/movies/{id}', name: 'api_movie_delete', methods: ['DELETE'])]
