@@ -9,7 +9,7 @@ const genres: Genre[] = [
 ];
 
 type Props = {
-    onCreated: (newMovie: MovieFormData) => void;  // <-- changé ici
+    onCreated: (formData: FormData) => void;
 };
 
 export default function MovieCreateForm({ onCreated }: Props) {
@@ -24,11 +24,20 @@ export default function MovieCreateForm({ onCreated }: Props) {
     const [loading, setLoading] = useState(false);
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
-        const { name, value } = e.target;
-        setForm(prev => ({
-            ...prev,
-            [name]: name === 'duration' ? Number(value) : value,
-        }));
+        const { name, value, type } = e.target;
+        if (type === 'file') {
+            const fileInput = e.target as HTMLInputElement;
+            const file = fileInput.files?.[0];
+            setForm(prev => ({
+                ...prev,
+                [name]: file,
+            }));
+        } else {
+            setForm(prev => ({
+                ...prev,
+                [name]: name === 'duration' ? Number(value) : value,
+            }));
+        }
     }
 
     async function handleSubmit(e: React.FormEvent) {
@@ -43,8 +52,20 @@ export default function MovieCreateForm({ onCreated }: Props) {
         setLoading(true);
 
         try {
-            // Ici on passe simplement le form (MovieFormData) à onCreated
-            await onCreated(form);
+            const formData = new FormData();
+            formData.append('data', JSON.stringify({
+                title: form.title,
+                description: form.description,
+                genre: form.genre,
+                duration: form.duration,
+                release_date: form.release_date
+            }));
+
+            if (form.image) {
+                formData.append('image', form.image);
+            }
+
+            await onCreated(formData);
             setForm({
                 title: '',
                 description: '',
@@ -62,6 +83,16 @@ export default function MovieCreateForm({ onCreated }: Props) {
     return (
         <Form onSubmit={handleSubmit}>
             {error && <Alert variant="danger">{error}</Alert>}
+
+            <Form.Group className="mb-3">
+                <Form.Label>Image</Form.Label>
+                <Form.Control
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    onChange={handleChange}
+                />
+            </Form.Group>
 
             <Form.Group className="mb-3" controlId="title">
                 <Form.Label>Titre</Form.Label>

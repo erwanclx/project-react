@@ -38,4 +38,5 @@ Generate and run migs
 ```bash
 php bin/console make:migration
 php bin/console doctrine:migrations:migrate
+php bin/console doctrine:schema:update --force (uniquement si conflit)
 ```

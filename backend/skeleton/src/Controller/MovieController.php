@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class MovieController extends AbstractController
 {
@@ -22,9 +23,10 @@ class MovieController extends AbstractController
             'genre' => $movie->getGenre()?->value,
             'duration' => $movie->getDuration(),
             'release_date' => $movie->getReleaseDate()->format('c'),
+            'image' => $movie->getImage(),
         ];
     }
-    #[Route('/movies', name: 'api_movies', methods: ['GET'])]
+    #[Route('/movies', name: 'api_movies', methods: ['GET'])]    
     public function getMovies(EntityManagerInterface $em): JsonResponse
     {
         $movies = $em->getRepository(Movie::class)->findAll();
@@ -36,6 +38,7 @@ class MovieController extends AbstractController
             'genre' => $movie->getGenre()?->value,
             'duration' => $movie->getDuration(),
             'release_date' => $movie->getReleaseDate()->format('c'),
+            'image' => $movie->getImage(),
         ], $movies);
 
         return $this->json($data);
@@ -61,9 +64,9 @@ class MovieController extends AbstractController
     }
 
     #[Route('/movies', name: 'api_movie_create', methods: ['POST'])]
-    public function createMovie(Request $request, EntityManagerInterface $em): JsonResponse
+    public function createMovie(Request $request, EntityManagerInterface $em, SluggerInterface $slugger): JsonResponse
     {
-        $data = json_decode($request->getContent(), true);
+        $data = json_decode($request->request->get('data'), true);
 
         if (!isset($data['title'], $data['genre'], $data['release_date'], $data['duration'])) {
             return $this->json(['error' => 'Missing required fields'], Response::HTTP_BAD_REQUEST);
@@ -79,6 +82,23 @@ class MovieController extends AbstractController
             ->setGenre(Genre::from($data['genre']))
             ->setDuration((int)$data['duration'])
             ->setReleaseDate(new \DateTime($data['release_date']));
+
+        $imageFile = $request->files->get('image');
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('movie_images_directory'),
+                    $newFilename
+                );
+                $movie->setImage($newFilename);
+            } catch (\Exception $e) {
+                return $this->json(['error' => 'Error uploading image'], Response::HTTP_INTERNAL_SERVER_ERROR);
+            }
+        }
 
         $em->persist($movie);
         $em->flush();

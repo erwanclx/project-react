@@ -7,7 +7,7 @@ import type { Movie } from '../types/movie';
 import { Genre } from '../types/movie';
 import type { MovieFormData } from '../types/movie';
 
-const API_URL = 'http://localhost:8001/api';
+const API_URL = 'http://localhost:8002/api';
 
 type RawMovie = {
     id: number;
@@ -16,6 +16,7 @@ type RawMovie = {
     genre: string;
     duration: number;
     release_date: string;
+    image: string | null;
 };
 
 function mapGenre(genreStr: string | undefined | null): Genre | null {
@@ -33,6 +34,7 @@ function transformMovie(raw: RawMovie): Movie {
         genre: mapGenre(raw.genre),
         duration: raw.duration,
         release_date: raw.release_date,
+        image: raw.image,
     };
 }
 
@@ -98,11 +100,10 @@ export default function MovieManager() {
                 <ActionSelect value={selectedAction} onActionSelect={setSelectedAction} />
                 <p>🟢 Formulaire de création ici</p>
                 <MovieCreateForm
-                    onCreated={async (formData: MovieFormData) => {
+                    onCreated={async (formData: FormData) => {
                         const res = await fetch(`${API_URL}/movies`, {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify(formData),
+                            body: formData,
                         });
                         if (!res.ok) throw new Error('Erreur création');
                         const rawCreatedMovie: RawMovie = await res.json();

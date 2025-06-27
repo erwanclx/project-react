@@ -28,6 +28,9 @@ class Movie
     #[ORM\Column(type: 'datetime')]
     private ?\DateTime $releaseDate = null;
 
+    #[ORM\Column(type: 'string', length: 255, nullable: true)]
+    private ?string $image = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -85,6 +88,17 @@ class Movie
     public function setReleaseDate(\DateTime $releaseDate): self
     {
         $this->releaseDate = $releaseDate;
+        return $this;
+    }
+
+    public function getImage(): ?string
+    {
+        return $this->image;
+    }
+
+    public function setImage(?string $image): self
+    {
+        $this->image = $image;
         return $this;
     }
 }

@@ -23,11 +23,12 @@ export type Genre = typeof Genre[keyof typeof Genre];
 
 export interface Movie {
     id: number | null;
-    title: string | null;
+    title: string;
     description: string | null;
     genre: Genre | null;
-    duration: number | null;
-    release_date: string | null; // Format ISO string (YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss)
+    duration: number;
+    release_date: string; // Format ISO string (YYYY-MM-DD ou YYYY-MM-DDTHH:mm:ss)
+    image: string | null;
 }
 
 /* DTO pour les opérations CRUD */
@@ -49,4 +50,5 @@ export interface MovieFormData {
     genre: Genre;
     duration: number;
     release_date: Date | string;
+    image?: File;
 }

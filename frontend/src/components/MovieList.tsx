@@ -25,6 +25,7 @@ export default function MovieList({ movies, editable = false, onEdit, onDelete }
             <thead>
                 <tr>
                     <th>Titre</th>
+                    <th>Image</th>
                     <th>Genre</th>
                     <th>Durée (min)</th>
                     <th>Date de sortie</th>
@@ -43,6 +44,13 @@ export default function MovieList({ movies, editable = false, onEdit, onDelete }
                     movies.map((movie) => (
                         <tr key={movie.id}>
                             <td>{movie.title ?? '—'}</td>
+                            <td>
+                                <img
+                                    src={`http://localhost:8002/uploads/movies/${movie.image}`}
+                                    alt={movie.title}
+                                    style={{ maxWidth: '100px' }}
+                                />
+                            </td>
                             <td>{movie.genre ?? '—'}</td>
                             <td>{movie.duration ?? '—'}</td>
                             <td>{formatDate(movie.release_date)}</td>
