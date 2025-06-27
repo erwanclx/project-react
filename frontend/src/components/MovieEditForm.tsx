@@ -22,7 +22,7 @@ export default function MovieEditForm({ movie, onUpdated, onCancel }: Props) {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const API_URL = 'http://localhost:8002/api';
+    const API_URL = 'http://localhost:8001/api';
 
     function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) {
         const { name, value, type } = e.target;

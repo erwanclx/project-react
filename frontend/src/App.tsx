@@ -6,7 +6,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 function App() {
   return (
     <div className="App">
-      <h1>🎬 Movie Manager</h1>
+      <h1>🎬 IMDbad</h1>
       <MovieManager />
     </div>
   )

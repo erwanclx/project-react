@@ -26,7 +26,7 @@ class MovieController extends AbstractController
             'image' => $movie->getImage(),
         ];
     }
-    #[Route('/movies', name: 'api_movies', methods: ['GET'])]    
+    #[Route('/movies', name: 'api_movies', methods: ['GET'])]
     public function getMovies(EntityManagerInterface $em): JsonResponse
     {
         $movies = $em->getRepository(Movie::class)->findAll();
@@ -87,7 +87,7 @@ class MovieController extends AbstractController
         if ($imageFile) {
             $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
             $safeFilename = $slugger->slug($originalFilename);
-            $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
             try {
                 $imageFile->move(
@@ -114,15 +114,11 @@ class MovieController extends AbstractController
             return $this->json(['error' => 'Movie not found'], Response::HTTP_NOT_FOUND);
         }
 
-        // Gestion des données selon le type de requête
         if ($request->getMethod() === 'POST') {
-            // Requête multipart/form-data avec image
             $data = json_decode($request->request->get('data'), true);
-            
-            // Gestion de l'upload d'image
+
             $imageFile = $request->files->get('image');
             if ($imageFile) {
-                // Supprimer l'ancienne image si elle existe
                 if ($movie->getImage()) {
                     $oldImagePath = $this->getParameter('movie_images_directory') . '/' . $movie->getImage();
                     if (file_exists($oldImagePath)) {
@@ -132,7 +128,7 @@ class MovieController extends AbstractController
 
                 $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
                 $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename.'-'.uniqid().'.'.$imageFile->guessExtension();
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
 
                 try {
                     $imageFile->move(

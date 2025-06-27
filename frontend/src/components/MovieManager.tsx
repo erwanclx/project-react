@@ -5,9 +5,8 @@ import MovieCreateForm from './MovieCreateForm';
 import MovieEditForm from './MovieEditForm';
 import type { Movie } from '../types/movie';
 import { Genre } from '../types/movie';
-import type { MovieFormData } from '../types/movie';
 
-const API_URL = 'http://localhost:8002/api';
+const API_URL = 'http://localhost:8001/api';
 
 type RawMovie = {
     id: number;
@@ -88,7 +87,6 @@ export default function MovieManager() {
             <div key={movies.length}> {/* force un rerender à chaque modif */}
                 <h1>Liste des films</h1>
                 <ActionSelect value={selectedAction} onActionSelect={setSelectedAction} />
-                {console.log(movies)}
                 <MovieList movies={movies} editable={false} />
             </div>
         );
