@@ -45,11 +45,17 @@ export default function MovieList({ movies, editable = false, onEdit, onDelete }
                         <tr key={movie.id}>
                             <td>{movie.title ?? '—'}</td>
                             <td>
-                                <img
-                                    src={`http://localhost:8002/uploads/movies/${movie.image}`}
-                                    alt={movie.title}
-                                    style={{ maxWidth: '100px' }}
-                                />
+                                {movie.image ? (
+                                    <img
+                                        src={`http://localhost:8002/uploads/movies/${movie.image}`}
+                                        alt={movie.title}
+                                        style={{ maxWidth: '100px' }}
+                                    />
+                                ) : (
+                                    <div style={{ maxWidth: '100px', textAlign: 'center' }}>
+                                        Aucune image
+                                    </div>
+                                )}
                             </td>
                             <td>{movie.genre ?? '—'}</td>
                             <td>{movie.duration ?? '—'}</td>

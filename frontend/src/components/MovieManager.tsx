@@ -88,6 +88,7 @@ export default function MovieManager() {
             <div key={movies.length}> {/* force un rerender à chaque modif */}
                 <h1>Liste des films</h1>
                 <ActionSelect value={selectedAction} onActionSelect={setSelectedAction} />
+                {console.log(movies)}
                 <MovieList movies={movies} editable={false} />
             </div>
         );
