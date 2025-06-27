@@ -63,6 +63,7 @@ services:
     volumes:
       - ./default.conf:/etc/nginx/conf.d/default.conf
       - ./frontend/dist:/usr/share/nginx/html
+      - ./backend/skeleton/public:/var/www/html/public
     depends_on:
       - backend_dev
     networks:
